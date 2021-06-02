@@ -37,10 +37,10 @@ import org.apache.spark.sql.sources.{BaseRelation, InsertableRelation, TableScan
 
 
 case class RESTRelation(
-    restOptions: RESTOptions)(@transient val sparkSession: SparkSession)
+                         restOptions: RESTOptions)(@transient val sparkSession: SparkSession)
   extends BaseRelation
-  with TableScan
-  with InsertableRelation {
+    with TableScan
+    with InsertableRelation {
 
   override def sqlContext: SQLContext = sparkSession.sqlContext
 
@@ -65,12 +65,12 @@ case class RESTRelation(
   private val inputKeys = restOptions.inputKeys
 
   private val inputDf = if (restOptions.inputType == "tableName") {
-        sparkSession.sql(s"select *  from $inputs")
+    sparkSession.sql(s"select *  from $inputs")
   }
   else {
-        import sparkSession.implicits._
-        val inputStrArr = inputs.split(restOptions.inputStrRecordDelimeter)
-        sparkSession.sparkContext.parallelize(inputStrArr).toDF("strInput")
+    import sparkSession.implicits._
+    val inputStrArr = inputs.split(restOptions.inputStrRecordDelimeter)
+    sparkSession.sparkContext.parallelize(inputStrArr).toDF("strInput")
   }
 
   private val columnNames : Array[String] = inputDf.columns
@@ -103,47 +103,54 @@ case class RESTRelation(
 
   }
 
+  def stringAll[X](x :X) :String = x match {
+    case arr: Array[_] => arr.map(stringAll).mkString("["," ","]")
+    case null => "".toString
+    case _ => x.toString
+  }
+
   private def callRest(data : Row) : String = {
 
-    val valArray = data.toSeq.toArray.map(_.toString)
+    val valArray = data.toSeq.toArray
+    //      .map(stringAll(_))
 
-    val valuesArr = if (restOptions.inputType == "tableName") valArray else {
-        valArray(0).split(restOptions.inputStrFieldDelimeter)
-    }
+    //    val valuesArr = if (restOptions.inputType == "tableName") valArray else {
+    //        valArray(0).split(restOptions.inputStrFieldDelimeter)
+    //    }
 
-    val inputDataStr = prepareInputData(valuesArr)
+
+    val inputDataStr = prepareInputData(valArray)
 
     val contentType = "application/" + restOptions.postInputFormat
     val userCred = if (restOptions.userId == "") ""
-        else restOptions.userId + ":" + restOptions.userPassword
+    else restOptions.userId + ":" + restOptions.userPassword
     val connectionStr = restOptions.connectionTimeout + ":" + restOptions.readTimeout
     val oauthStr = if (restOptions.oauthConsumerKey == "") "" else {
-        (restOptions.oauthConsumerKey + ":" + restOptions.oauthConsumerSecret
-           + ":" + restOptions.oauthToken + ":" + restOptions.oauthTokenSecret)
+      (restOptions.oauthConsumerKey + ":" + restOptions.oauthConsumerSecret
+        + ":" + restOptions.oauthToken + ":" + restOptions.oauthTokenSecret)
     }
 
-    // print("in callRest input data str : " + inputDataStr +
-    //  ", contentType : " + contentType + "\n")
 
     val resp = RestConnectorUtil.callRestAPI(restOptions.url, inputDataStr,
-           restOptions.method, oauthStr, userCred, connectionStr,
-           contentType, "BODY", restOptions.oauthToken).asInstanceOf[String]
-    prepareOutputData(valuesArr, resp)
-
+      restOptions.method, oauthStr, userCred, connectionStr,
+      contentType, "BODY", restOptions.oauthToken).asInstanceOf[String]
+    //    prepareOutputData(valuesArr, resp)
+    ""
   }
 
-  private def prepareInputData(valArray: Array[String]) : String = {
+  private def prepareInputData(valArray: Array[Any]) : String = {
 
     val inputDataKeys = restOptions.inputKeys
     val keyArr = if (inputDataKeys == "") columnNames else inputDataKeys.split(",")
 
-    if(restOptions.method == "GET") {
-        RestConnectorUtil.prepareTextInput(keyArr, valArray)
-    }
-    else restOptions.postInputFormat match {
-        case "json" => RestConnectorUtil.prepareJsonInput(keyArr, valArray)
-        case "xml" => throw new Exception("XML based input for post is not supported yet")
-        case _ => throw new Exception("Only JSON based input for post is supported now")
+    //    if(restOptions.method == "GET") {
+    //        RestConnectorUtil.prepareTextInput(keyArr, valArray)
+    //    }
+    //    else
+    restOptions.postInputFormat match {
+      case "json" => RestConnectorUtil.prepareJsonInput(keyArr, valArray)
+      case "xml" => throw new Exception("XML based input for post is not supported yet")
+      case _ => throw new Exception("Only JSON based input for post is supported now")
     }
 
   }
@@ -156,13 +163,12 @@ case class RESTRelation(
     val keyArr = if (inputDataKeys == "") columnNames else inputDataKeys.split(",")
 
     if(includeInputFlg == "N") outputStr else {
-
-        restOptions.outputFormat match {
-           case "json" => RestConnectorUtil.prepareJsonOutput(keyArr, valArray, outputStr)
-           case "xml" => throw new Exception("XML output including Input keys is not supported yet")
-           case "csv" => throw new Exception("CSV output including Input keys is not supported yet")
-           case  _ => throw new Exception("Only JSON  output including Input keys is supported now")
-        }
+      restOptions.outputFormat match {
+        case "json" => RestConnectorUtil.prepareJsonOutput(keyArr, valArray, outputStr)
+        case "xml" => throw new Exception("XML output including Input keys is not supported yet")
+        case "csv" => throw new Exception("CSV output including Input keys is not supported yet")
+        case  _ => throw new Exception("Only JSON  output including Input keys is supported now")
+      }
 
     }
 

@@ -20,13 +20,13 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.dsext</groupId>
-    <artifactId>dsext-parent_2.11</artifactId>
-    <version>2.1.0-SNAPSHOT</version>
+    <artifactId>dsext-parent_2.12</artifactId>
+    <version>3.1.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <groupId>org.apache.dsext</groupId>
-  <artifactId>spark-datasource-rest_2.11</artifactId>
+  <artifactId>spark-datasource-rest_2.12</artifactId>
   <properties>
     <sbt.project.name>spark-datasource-rest</sbt.project.name>
   </properties>
