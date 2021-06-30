@@ -50,7 +50,6 @@ object RestConnectorUtil {
     // " , data : " + data + "\n")
 
 
-
     var httpc = (method: @switch) match {
       case "GET" => Http(addQryParmToUri(uri, data)).header("Content-Type","application/x-www-form-urlencoded").header("x-api-key",authToken)
       case "PUT" => Http(uri).put(data).header("content-type", contentType)
@@ -83,10 +82,7 @@ object RestConnectorUtil {
     // print("in callRestAPI final http : " + httpc + "\n")
 
     val resp = (respType : @switch) match {
-      case "BODY" => {
-        println("Response Received")
-        println(httpc.asString.body)
-        httpc.asString.body}
+      case "BODY" => httpc.asString.body
       case "BODY-BYTES" => httpc.asBytes.body
       case "BODY-STREAM" => getBodyStream(httpc)
       case "CODE" => httpc.asString.code
@@ -147,7 +143,7 @@ object RestConnectorUtil {
 
       cnt += 1
     }
-
+    println("Requesting:")
     println("{" + outArrB.mkString(",") + "}")
     "{" + outArrB.mkString(",") + "}"
 
