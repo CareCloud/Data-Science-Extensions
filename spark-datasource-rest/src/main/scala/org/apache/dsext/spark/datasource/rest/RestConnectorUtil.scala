@@ -42,7 +42,8 @@ object RestConnectorUtil {
                   connStr: String,
                   contentType: String,
                   respType: String,
-                  authToken: String): Any = {
+                  authToken: String,
+                  transactionMode: String): Any = {
 
 
     // print("path in callRestAPI : " + uri + " , method : " + method + ", content type : " +
@@ -54,7 +55,7 @@ object RestConnectorUtil {
       case "GET" => Http(addQryParmToUri(uri, data)).header("Content-Type","application/x-www-form-urlencoded").header("x-api-key",authToken)
       case "PUT" => Http(uri).put(data).header("content-type", contentType)
       case "DELETE" => Http(uri).method("DELETE")
-      case "POST" => Http(uri).postData(data).header("Content-Type", contentType).header("x-api-key",authToken)
+      case "POST" => Http(uri).postData(data).header("Content-Type", contentType).header("x-api-key",authToken).param("mode", transactionMode)
     }
 
     val conns = connStr.split(":")

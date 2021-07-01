@@ -110,7 +110,6 @@ case class RESTRelation(
   }
 
   private def callRest(data : Row) : String = {
-
     val valArray = data.toSeq.toArray
     //      .map(stringAll(_))
 
@@ -133,7 +132,7 @@ case class RESTRelation(
 
     val resp = RestConnectorUtil.callRestAPI(restOptions.url, inputDataStr,
       restOptions.method, oauthStr, userCred, connectionStr,
-      contentType, "BODY", restOptions.oauthToken).asInstanceOf[String]
+      contentType, "BODY", restOptions.oauthToken, restOptions.transactionMode).asInstanceOf[String]
     //    prepareOutputData(valuesArr, resp)
     ""
   }
