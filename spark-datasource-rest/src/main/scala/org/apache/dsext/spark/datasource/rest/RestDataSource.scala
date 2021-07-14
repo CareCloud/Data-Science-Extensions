@@ -17,9 +17,8 @@
 
 package org.apache.dsext.spark.datasource.rest
 
-import org.apache.spark.SparkContext
-import org.apache.spark.sql.sources.{BaseRelation, DataSourceRegister, RelationProvider}
 import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.sources.{BaseRelation, DataSourceRegister, RelationProvider}
 
 /*
    This is the implementation of the interface needed
@@ -32,10 +31,8 @@ class RestDataSource extends RelationProvider
   override def shortName(): String = "rest"
 
   override def createRelation(
-      sqlContext: SQLContext,
-      parameters: Map[String, String]): BaseRelation = {
-
-    import RESTOptions._
+                               sqlContext: SQLContext,
+                               parameters: Map[String, String]): BaseRelation = {
 
     val restOptions = new RESTOptions(parameters)
 

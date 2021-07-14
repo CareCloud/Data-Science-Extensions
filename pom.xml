@@ -24,8 +24,8 @@
     <version>18</version>
   </parent>
   <groupId>org.apache.dsext</groupId>
-  <artifactId>dsext-parent_2.11</artifactId>
-  <version>2.1.0-SNAPSHOT</version>
+  <artifactId>dsext-parent_2.12</artifactId>
+  <version>3.1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Data Science Extensions - Parent POM</name>
   <url>http://apache.org/</url>
@@ -52,30 +52,30 @@
   </prerequisites>
 
 
-    <!-- 
-  <mailingLists>
-    <mailingList>
-      <name>Dev Mailing List</name>
-      <post>dev@dsext.apache.org</post>
-      <subscribe>dev-subscribe@dsext.apache.org</subscribe>
-      <unsubscribe>dev-unsubscribe@dsext.apache.org</unsubscribe>
-    </mailingList>
+  <!--
+<mailingLists>
+  <mailingList>
+    <name>Dev Mailing List</name>
+    <post>dev@dsext.apache.org</post>
+    <subscribe>dev-subscribe@dsext.apache.org</subscribe>
+    <unsubscribe>dev-unsubscribe@dsext.apache.org</unsubscribe>
+  </mailingList>
 
-    <mailingList>
-      <name>User Mailing List</name>
-      <post>user@dsext.apache.org</post>
-      <subscribe>user-subscribe@dsext.apache.org</subscribe>
-      <unsubscribe>user-unsubscribe@dsext.apache.org</unsubscribe>
-    </mailingList>
+  <mailingList>
+    <name>User Mailing List</name>
+    <post>user@dsext.apache.org</post>
+    <subscribe>user-subscribe@dsext.apache.org</subscribe>
+    <unsubscribe>user-unsubscribe@dsext.apache.org</unsubscribe>
+  </mailingList>
 
-    <mailingList>
-      <name>Commits Mailing List</name>
-      <post>commits@dsext.apache.org</post>
-      <subscribe>commits-subscribe@dsext.apache.org</subscribe>
-      <unsubscribe>commits-unsubscribe@dsext.apache.org</unsubscribe>
-    </mailingList>
-  </mailingLists>
-   -->
+  <mailingList>
+    <name>Commits Mailing List</name>
+    <post>commits@dsext.apache.org</post>
+    <subscribe>commits-subscribe@dsext.apache.org</subscribe>
+    <unsubscribe>commits-unsubscribe@dsext.apache.org</unsubscribe>
+  </mailingList>
+</mailingLists>
+ -->
 
   <modules>
     <module>spark-datasource-rest</module>
@@ -87,15 +87,15 @@
 
     <!-- General project dependencies version -->
     <java.version>1.7</java.version>
-    <scala.version>2.11.8</scala.version>
-    <scala.binary.version>2.11</scala.binary.version>
+    <scala.version>2.12.5</scala.version>
+    <scala.binary.version>2.12</scala.binary.version>
 
     <maven.version>3.3.9</maven.version>
     <slf4j.version>1.7.16</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
 
     <!-- Spark version -->
-    <spark.version>2.4.0</spark.version>
+    <spark.version>3.1.1</spark.version>
 
     <!-- Streaming Akka connector -->
     <akka.group>com.typesafe.akka</akka.group>
@@ -161,7 +161,7 @@
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
-  
+
   <dependencies>
     <!--
       This is a dummy dependency that is used to trigger the maven-shade plugin so that Spark's
@@ -329,13 +329,13 @@
       <dependency>
         <groupId>org.scalatest</groupId>
         <artifactId>scalatest_${scala.binary.version}</artifactId>
-        <version>2.2.6</version>
+        <version>3.0.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.scalacheck</groupId>
         <artifactId>scalacheck_${scala.binary.version}</artifactId>
-        <version>1.12.5</version> <!-- 1.13.0 appears incompatible with scalatest 2.2.6 -->
+        <version>1.15.2</version> <!-- 1.13.0 appears incompatible with scalatest 2.2.6 -->
         <scope>test</scope>
       </dependency>
 
@@ -716,7 +716,7 @@
             <execution>
               <id>default-cli</id>
               <goals>
-                 <goal>build-classpath</goal>
+                <goal>build-classpath</goal>
               </goals>
               <configuration>
                 <!-- This includes dependencies with 'runtime' and 'compile' scopes;
@@ -857,7 +857,7 @@
         <version>0.8.0</version>
         <configuration>
           <verbose>false</verbose>
-          <failOnViolation>false</failOnViolation>
+          <failOnViolation>true</failOnViolation>
           <includeTestSourceDirectory>true</includeTestSourceDirectory>
           <failOnWarning>false</failOnWarning>
           <sourceDirectory>${basedir}/src/main/scala</sourceDirectory>
@@ -1054,13 +1054,13 @@
     </profile>
 
     <profile>
-      <id>scala-2.11</id>
+      <id>scala-2.12</id>
       <activation>
         <property><name>!scala-2.10</name></property>
       </activation>
       <properties>
-        <scala.version>2.11.8</scala.version>
-        <scala.binary.version>2.11</scala.binary.version>
+        <scala.version>2.12.5</scala.version>
+        <scala.binary.version>2.12</scala.binary.version>
       </properties>
       <build>
         <plugins>
