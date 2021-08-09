@@ -28,15 +28,13 @@
   <version>3.1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Data Science Extensions - Parent POM</name>
-     <repositories>
+   <distributionManagement>
       <repository>
          <id>github</id>
-         <url>https://maven.pkg.github.com/CareCloud/*</url>
-         <snapshots>
-            <enabled>true</enabled>
-         </snapshots>
+         <name>GitHub Packages</name>
+         <url>https://maven.pkg.github.com/CareCloud/Data-Science-Extensions</url>
       </repository>
-   </repositories>
+   </distributionManagement>
   <url>http://apache.org/</url>
   <licenses>
     <license>
