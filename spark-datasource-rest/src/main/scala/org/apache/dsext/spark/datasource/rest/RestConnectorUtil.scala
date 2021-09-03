@@ -52,10 +52,14 @@ object RestConnectorUtil {
 
 
     var httpc = (method: @switch) match {
-      case "GET" => Http(addQryParmToUri(uri, data)).header("Content-Type","application/x-www-form-urlencoded").header("x-api-key",authToken)
+      case "GET" => Http(addQryParmToUri(uri, data))
+        .header("Content-Type", "application/x-www-form-urlencoded")
+        .header("x-api-key", authToken)
       case "PUT" => Http(uri).put(data).header("content-type", contentType)
       case "DELETE" => Http(uri).method("DELETE")
-      case "POST" => Http(uri).postData(data).header("Content-Type", contentType).header("x-api-key",authToken).param("mode", transactionMode)
+      case "POST" => Http(uri).postData(data)
+        .header("Content-Type", contentType)
+        .header("x-api-key", authToken).param("mode", transactionMode)
     }
 
     val conns = connStr.split(":")
@@ -122,32 +126,26 @@ object RestConnectorUtil {
 
   }
 
-  def prepareJsonInput(keys: Array[String], values: Array[Any]) : String = {
+  def prepareJsonInput(keys: Array[String], values: Array[String]) : String = {
 
-    //    def stringAll[X](x :X) :String = x match {
-    //      case null => "".toString
-    //      case _ => x.toString
-    //    }
     val keysLength = keys.length
     var cnt = 0
     val outArrB : ArrayBuffer[String] = new ArrayBuffer[String](keysLength)
 
     while (cnt < keysLength) {
-      //      if(stringAll(values(cnt)).startsWith("[") || stringAll(values(cnt)).startsWith("{")) //complex datatype (arrays or objects) and it was cast to string
-      //        {
-      //          outArrB += "\"" + keys(cnt) + "\":" + values(cnt)
-      //        }
-      //        else //simple datatype
+      // complex datatype (arrays or objects) and it was cast to string
+      if (values(cnt).startsWith("[") || values(cnt).startsWith("{"))
       {
         outArrB += "\"" + keys(cnt) + "\":" + values(cnt)
       }
-
+      else // simple datatype
+      {
+        outArrB += "\"" + keys(cnt) + "\":\"" + values(cnt) + "\""
+      }
       cnt += 1
     }
-    println("Requesting:")
-    println("{" + outArrB.mkString(",") + "}")
-    "{" + outArrB.mkString(",") + "}"
 
+    "{" + outArrB.mkString(",") + "}"
 
   }
 
@@ -173,11 +171,12 @@ object RestConnectorUtil {
     val outArrB : ArrayBuffer[String] = new ArrayBuffer[String](keysLength)
 
     while (cnt < keysLength) {
-      if(values(cnt).startsWith("[") || values(cnt).startsWith("{")) //complex datatype (arrays or objects)
+      // complex datatype (arrays or objects)
+      if (values(cnt).startsWith("[") || values(cnt).startsWith("{"))
         {
           outArrB += "\"" + keys(cnt) + "\":" + values(cnt)
         }
-        else //simple datatype
+        else // simple datatype
         {
           outArrB += "\"" + keys(cnt) + "\":\"" + values(cnt) + "\""
         }

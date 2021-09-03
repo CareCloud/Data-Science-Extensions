@@ -17,18 +17,11 @@
 
 package org.apache.dsext.spark.datasource.rest
 
-import java.nio.charset.StandardCharsets
-
-import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.apache.spark.storage.StorageLevel
-
-import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.SQLContext
-import org.apache.spark.sql.Row
-import org.apache.spark.sql.Dataset
-import org.apache.spark.sql.types.{StringType, StructType, StructField}
 import org.apache.spark.sql.sources.{BaseRelation, InsertableRelation, TableScan}
+import org.apache.spark.sql.types.StructType
+import org.apache.spark.sql._
+import org.apache.spark.storage.StorageLevel
 
 
 /*
@@ -64,8 +57,8 @@ case class RESTRelation(
   private val inputs = restOptions.input
   private val inputKeys = restOptions.inputKeys
 
-  private val inputDf = if (restOptions.inputType == "tableName") {
-    sparkSession.sql(s"select *  from $inputs")
+  private val inputDf: DataFrame = if (restOptions.inputType == "tableName") {
+    sparkSession.sql(s"select * from $inputs")
   }
   else {
     import sparkSession.implicits._
@@ -90,7 +83,6 @@ case class RESTRelation(
       sparkSession.read.json(restRdd.persist(StorageLevel.MEMORY_AND_DISK_SER)).schema
     }
     else {
-      import sparkSession.implicits._
       val samplePcnt : Double = restOptions.schemaSamplePcnt.toInt/100.00
       val sampleDf = inputDf.sample(false, samplePcnt)
       val finalSampleDf = if (sampleDf.count < 3) inputDf.limit(3) else sampleDf
@@ -103,19 +95,14 @@ case class RESTRelation(
 
   }
 
-  def stringAll[X](x :X) :String = x match {
-    case arr: Array[_] => arr.map(stringAll).mkString("["," ","]")
-    case null => "".toString
-    case _ => x.toString
-  }
 
   private def callRest(data : Row) : String = {
-    val valArray = data.toSeq.toArray
-    //      .map(stringAll(_))
 
-    //    val valuesArr = if (restOptions.inputType == "tableName") valArray else {
-    //        valArray(0).split(restOptions.inputStrFieldDelimeter)
-    //    }
+    val valArray = data.toSeq.toArray.map(_.toString)
+
+    val valuesArr = if (restOptions.inputType == "tableName") valArray else {
+        valArray(0).split(restOptions.inputStrFieldDelimeter)
+    }
 
 
     val inputDataStr = prepareInputData(valArray)
@@ -133,23 +120,27 @@ case class RESTRelation(
     val resp = RestConnectorUtil.callRestAPI(restOptions.url, inputDataStr,
       restOptions.method, oauthStr, userCred, connectionStr,
       contentType, "BODY", restOptions.oauthToken, restOptions.transactionMode).asInstanceOf[String]
-    //    prepareOutputData(valuesArr, resp)
-    ""
+    prepareOutputData(valuesArr, resp)
+
   }
 
-  private def prepareInputData(valArray: Array[Any]) : String = {
+  private def prepareInputData(valArray: Array[String]) : String = {
 
     val inputDataKeys = restOptions.inputKeys
     val keyArr = if (inputDataKeys == "") columnNames else inputDataKeys.split(",")
 
-    //    if(restOptions.method == "GET") {
-    //        RestConnectorUtil.prepareTextInput(keyArr, valArray)
-    //    }
-    //    else
-    restOptions.postInputFormat match {
-      case "json" => RestConnectorUtil.prepareJsonInput(keyArr, valArray)
-      case "xml" => throw new Exception("XML based input for post is not supported yet")
-      case _ => throw new Exception("Only JSON based input for post is supported now")
+    if(restOptions.method == "GET") {
+        RestConnectorUtil.prepareTextInput(keyArr, valArray)
+    }
+    else {
+      restOptions.postInputFormat match {
+        // TODO re-evaluate JSON serialization, use cases limited
+        //  `prepareJsonInput` interprets all simple types as String
+        //      case "json" => RestConnectorUtil.prepareJsonInput(keyArr, valArray)
+        case "json" => valArray.head // For POST we only take DataSet[String] JSON serialized
+        case "xml" => throw new Exception("XML based input for post is not supported yet")
+        case _ => throw new Exception("Only JSON based input for post is supported now")
+      }
     }
 
   }
