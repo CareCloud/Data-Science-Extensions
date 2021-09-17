@@ -28,7 +28,13 @@
   <version>3.1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Data Science Extensions - Parent POM</name>
-
+        <distributionManagement>
+        <repository>
+          <id>github</id>
+          <name>GitHub Packages</name>
+          <url>https://maven.pkg.github.com/mtbc-edi-ak154/data-science-extention</url>
+        </repository>
+      </distributionManagement>
   <url>http://apache.org/</url>
   <licenses>
     <license>
@@ -987,22 +993,7 @@
         <module>distribution</module>
       </modules>
     </profile>
-        <profile>
-      <id>github</id>
-      <activation>
-        <property>
-          <name>useGitHubPackages</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <distributionManagement>
-        <repository>
-          <id>github</id>
-          <name>GitHub Packages</name>
-          <url>https://maven.pkg.github.com/mtbc-edi-ak154/data-science-extention</url>
-        </repository>
-      </distributionManagement>
-    </profile>
+
     <profile>
       <id>doclint-java8-disable</id>
       <activation>
