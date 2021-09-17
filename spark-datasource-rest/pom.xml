@@ -32,6 +32,13 @@
   </properties>
   <packaging>jar</packaging>
   <name>Spark DataSource Rest</name>
+          <distributionManagement>
+        <repository>
+          <id>github</id>
+          <name>GitHub CareCloud Apache Maven Packages</name>
+          <url>https://maven.pkg.github.com/carecloud/data-science-extention</url>
+        </repository>
+      </distributionManagement>
   <url>http://dsext.apache.org/</url>
 
   <dependencies>
