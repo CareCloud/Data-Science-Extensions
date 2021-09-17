@@ -23,6 +23,7 @@
     <artifactId>apache</artifactId>
     <version>18</version>
   </parent>
+  <artifactId>dsext-parent_2.12</artifactId>
   <name>Data Science Extensions - Parent POM</name>
         <distributionManagement>
         <repository>
