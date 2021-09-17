@@ -31,8 +31,8 @@
    <distributionManagement>
       <repository>
          <id>github</id>
-         <name>carecloud</name>
-         <url>https://maven.pkg.github.com/CareCloud/Data-Science-Extensions</url>
+         <name>mtbc-edi-ak154</name>
+         <url>https://maven.pkg.github.com/mtbc-edi-ak154/data-dcience-extensions</url>
       </repository>
    </distributionManagement>
   <url>http://apache.org/</url>
