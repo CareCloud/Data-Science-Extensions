@@ -36,7 +36,7 @@
         <repository>
           <id>github</id>
           <name>GitHub CareCloud Apache Maven Packages</name>
-          <url>https://maven.pkg.github.com/carecloud/data-science-extention</url>
+          <url>https://maven.pkg.github.com/Carecloud/Data-Science-Extention</url>
         </repository>
       </distributionManagement>
   <url>http://dsext.apache.org/</url>
