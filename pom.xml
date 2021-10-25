@@ -32,7 +32,7 @@
         <repository>
           <id>github</id>
           <name>GitHub CareCloud Apache Maven Packages</name>
-          <url>https://maven.pkg.github.com/carecloud/data-science-extention</url>
+          <url>https://maven.pkg.github.com/Carecloud/Data-Science-Extention</url>
         </repository>
       </distributionManagement>
   <url>http://apache.org/</url>
@@ -147,7 +147,7 @@
       <id>central</id>
       <!-- This should be at top, it makes maven try the central repo first and then others and hence faster dep resolution -->
       <name>Maven Repository</name>
-      <url>https://maven.pkg.github.com/CareCloud/Data-Science-Extensions</url>
+      <url>https://repo1.maven.org/maven2</url>
       <releases>
         <enabled>true</enabled>
       </releases>
